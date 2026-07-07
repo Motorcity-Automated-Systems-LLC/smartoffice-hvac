@@ -1,21 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for
-import json
-import os
 
-# Since 'templates' is now at the root, you don't need complex pathing
-app = Flask(__name__) 
+app = Flask(__name__)
 
-# This represents the state of infrastructure
+# This is your "Source of Truth." 
+# Any key added here is available to the entire app.
 config = {
-    "BULLPEN_TEMP": 74.0, "CONF_CO2": 450, "IDF_TEMP": 68.0,
-    "OFFICE_1_TEMP": 72.0, "OFFICE_2_TEMP": 72.0,
-    "VLAN_10_STATUS": "ACTIVE", "VLAN_20_STATUS": "ACTIVE"
+    "BULLPEN_ZONE_TEMP": 74.0,
+    "CONF_RM_CO2_LEVEL": 450.0,
+    "IDF_CLOSET_TEMP": 68.0,
+    "OFFICE_1_TEMP": 72.0,
+    "OFFICE_2_TEMP": 72.0
 }
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        # Update the running config
+        # We update the 'config' dictionary directly using the names from index.html
         config["BULLPEN_ZONE_TEMP"] = float(request.form.get("bullpen_temp"))
         config["CONF_RM_CO2_LEVEL"] = float(request.form.get("conf_co2"))
         config["IDF_CLOSET_TEMP"] = float(request.form.get("idf_temp"))
@@ -26,5 +26,4 @@ def index():
     return render_template("index.html", data=config)
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)
