@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HQ Smart Office - BMS Command Center</title>
+    <style>
+        :root {
+            --bg-dark: #0F172A;
+            --card-bg: #1E293B;
+            --text-main: #F8FAFC;
+            --accent-blue: #38BDF8;
+            --accent-green: #34D399;
+            --accent-orange: #FB923C;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { border-bottom: 2px solid #334155; padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: var(--accent-blue); margin: 0; font-size: 2rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background-color: var(--card-bg); border-radius: 8px; padding: 20px; border: 1px solid #334155; }
+        .card h2 { margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 10px; font-size: 1.25rem; }
+        .stat { font-size: 2.5rem; font-weight: bold; margin: 15px 0; font-family: monospace; }
+        .bullpen-color { color: var(--accent-green); }
+        .conf-color { color: var(--accent-orange); }
+        .idf-color { color: #F43F5E; }
+        .control-group { margin-top: 15px; }
+        label { display: block; font-size: 0.85rem; color: #94A3B8; margin-bottom: 5px; }
+        input[type="range"] { width: 100%; accent-color: var(--accent-blue); }
+        .btn { background-color: var(--accent-blue); color: var(--bg-dark); border: none; padding: 10px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HQ SMART OFFICE // BMS DASHBOARD</h1>
+            <p>Layer 7 Telemetry & Environmental Infrastructure Control Loop</p>
+        </header>
+
+        <form action="/update" method="POST" class="grid">
+            <div class="card">
+                <h2 class="bullpen-color">Zone 01: Main Bullpen (16 Desks)</h2>
+                <div class="stat bullpen-color">{{ data.BULLPEN_ZONE_TEMP }}°F</div>
+                <div class="control-group">
+                    <label>Simulate Environmental Temperature (°F):</label>
+                    <input type="range" name="bullpen_temp" min="65" max="85" step="0.5" value="{{ data.BULLPEN_ZONE_TEMP }}">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="conf-color">Zone 02: Conference Room</h2>
+                <div class="stat conf-color">{{ data.CONF_RM_CO2_LEVEL }} <span style="font-size:1rem;">PPM</span></div>
+                <div class="control-group">
+                    <label>Simulate Air Quality (CO2 PPM):</label>
+                    <input type="range" name="conf_co2" min="400" max="1500" step="50" value="{{ data.CONF_RM_CO2_LEVEL }}">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="idf-color">Zone 05: IDF Server Closet</h2>
+                <div class="stat idf-color">{{ data.IDF_CLOSET_TEMP }}°F</div>
+                <div class="control-group">
+                    <label>Simulate Rack Thermal Load (°F):</label>
+                    <input type="range" name="idf_temp" min="60" max="90" step="0.5" value="{{ data.IDF_CLOSET_TEMP }}">
+                </div>
+                <button type="submit" class="btn">Execute Logic Scan</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
