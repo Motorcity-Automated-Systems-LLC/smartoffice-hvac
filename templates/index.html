@@ -1,61 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HQ Smart Office - BMS Command Center</title>
-    <style>
-        :root {
-            --bg-dark: #0F172A;
-            --card-bg: #1E293B;
-            --text-main: #F8FAFC;
-            --accent-blue: #38BDF8;
-            --accent-green: #34D399;
-            --accent-orange: #FB923C;
-            --accent-red: #F43F5E;
-        }
-        body { font-family: sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background-color: var(--card-bg); border-radius: 8px; padding: 20px; border: 1px solid #334155; }
-        .stat { font-size: 2rem; font-weight: bold; margin: 10px 0; }
-        input[type="range"] { width: 100%; margin-top: 10px; }
-        button { background-color: var(--accent-blue); color: #000; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>BMS Command Center</h1>
-        <form action="/" method="POST" class="grid">
+<form action="/" method="POST" class="grid">
+    {% for zone_name, data in zones.items() %}
     <div class="card">
-        <h2>Bullpen</h2>
-        <div class="stat">{{ data.BULLPEN_ZONE_TEMP }}°F</div>
-        <input type="range" name="bullpen_temp" min="60" max="90" step="0.5" value="{{ data.BULLPEN_ZONE_TEMP }}">
+        <h2>{{ zone_name.replace('_', ' ') }}</h2>
+        <div class="stat">Target: {{ data.target }}{{ data.unit }}</div>
+        <div class="stat" style="color: var(--accent-blue)">Actual: {{ data.actual }}{{ data.unit }}</div>
+        
+        <input type="range" name="{{ zone_name.lower() }}" 
+               min="400" max="1500" step="5" 
+               value="{{ data.target }}">
     </div>
+    {% endfor %}
     
-    <div class="card">
-        <h2>Exec Office 01</h2>
-        <div class="stat">{{ data.OFFICE_1_TEMP }}°F</div>
-        <input type="range" name="office_1_temp" min="60" max="80" step="0.5" value="{{ data.OFFICE_1_TEMP }}">
-    </div>
-
-    <div class="card">
-        <h2>Exec Office 02</h2>
-        <div class="stat">{{ data.OFFICE_2_TEMP }}°F</div>
-        <input type="range" name="office_2_temp" min="60" max="80" step="0.5" value="{{ data.OFFICE_2_TEMP }}">
-    </div>
-
-    <div class="card">
-        <h2>Conf. Room</h2>
-        <div class="stat">{{ data.CONF_RM_CO2_LEVEL }} PPM</div>
-        <input type="range" name="conf_co2" min="400" max="1500" step="50" value="{{ data.CONF_RM_CO2_LEVEL }}">
-    </div>
-
-    <div class="card">
-        <h2>IDF Closet</h2>
-        <div class="stat">{{ data.IDF_CLOSET_TEMP }}°F</div>
-        <input type="range" name="idf_temp" min="60" max="90" step="0.5" value="{{ data.IDF_CLOSET_TEMP }}">
-    </div>
-
-    <button type="submit">Update All Infrastructure</button>
+    <button type="submit">Sync Infrastructure Targets</button>
 </form>
