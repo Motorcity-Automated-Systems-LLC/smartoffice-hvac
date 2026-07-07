@@ -1,11 +1,11 @@
-#!/usr/bin/env python3
 from flask import Flask, render_template, request, redirect, url_for
+import json
 import os
 
-app = Flask(__name__, template_folder='templates')
+# Since 'templates' is now at the root, you don't need complex pathing
+app = Flask(__name__) 
 
-# The "Running Configuration" of your BAS/Network
-# This represents the state of your infrastructure
+# This represents the state of infrastructure
 config = {
     "BULLPEN_TEMP": 74.0, "CONF_CO2": 450, "IDF_TEMP": 68.0,
     "OFFICE_1_TEMP": 72.0, "OFFICE_2_TEMP": 72.0,
