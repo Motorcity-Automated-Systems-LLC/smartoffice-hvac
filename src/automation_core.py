@@ -2,8 +2,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 
-# This tells Flask to look for the 'templates' folder inside the 'src' directory
-app = Flask(__name__, template_folder='templates')
+# Get the absolute path to the directory where this script resides (src/)
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Point Flask specifically to the 'templates' folder inside 'src/'
+app = Flask(__name__, template_folder=os.path.join(basedir, 'templates'))
 
 # Live Global State (Simulated BACnet Instance Memory)
 building_sensors = {
