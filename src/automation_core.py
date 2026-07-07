@@ -1,44 +1,55 @@
 #!/usr/bin/env python3
-"""
-Smart Office Infrastructure - Automation Core
-Simulated Layer 7 Application Logic for HVAC Control Loops over UDP Port 47808
-"""
+from flask import Flask, render_template, request, redirect, url_for
+import os
 
-import time
+app = Flask(__name__)
 
-# Simulated Local Sensor Environment (Inputs)
+# Live Global State (Simulated BACnet Instance Memory)
 building_sensors = {
-    "BULLPEN_ZONE_TEMP": 74.5,   # Degrees Fahrenheit (Currently warm)
-    "CONF_RM_CO2_LEVEL": 450.0,  # Parts Per Million (Normal ambient outdoor air)
-    "IDF_CLOSET_TEMP": 67.2,     # Target server room temp
-    "IDF_ALARM_STATUS": 0        # 0 = Normal Operation, 1 = Thermal Alarm
+    "BULLPEN_ZONE_TEMP": 74.5,
+    "CONF_RM_CO2_LEVEL": 450.0,
+    "IDF_CLOSET_TEMP": 67.2
 }
 
-# Operational Targets (Setpoints)
 SETPOINTS = {
     "BULLPEN_COOLING": 72.0,
     "CONF_MAX_CO2": 800.0,
     "IDF_MAX_TEMP": 75.0
 }
 
-def evaluate_hvac_logic():
-    print("--- Executing Automation Core Telemetry Scan ---")
-    
-    # 1. Bullpen Thermal Management Loop (Now accounts for 16 workstations worth of heat!)
-    if building_sensors["BULLPEN_ZONE_TEMP"] > SETPOINTS["BULLPEN_COOLING"]:
-        damper_pos = 100
-        print(f"[ACTION]: Bullpen Temp ({building_sensors['BULLPEN_ZONE_TEMP']}°F) exceeds setpoint. Opening VAV-01 Damper to {damper_pos}%.")
-    else:
-        damper_pos = 20
-        print(f"[STATUS]: Bullpen Temp nominal. VAV-01 Damper idling at {damper_pos}%.")
+@app.route("/")
+def index():
+    # Pass our current live stats over to our visual HTML layout
+    return render_template("index.html", data=building_sensors)
 
-    # 2. Conference Room IAQ (Indoor Air Quality) Ventilation Loop
-    if building_sensors["CONF_RM_CO2_LEVEL"] > SETPOINTS["CONF_MAX_CO2"]:
-        conf_damper = 100
-        print(f"[WARN]: CO2 Spike ({building_sensors['CONF_RM_CO2_LEVEL']} PPM). Flushing Conference Room with Fresh Outside Air.")
+@app.route("/update", methods=["POST"])
+def update_telemetry():
+    # Capture input values from the dashboard sliders
+    building_sensors["BULLPEN_ZONE_TEMP"] = float(request.form.get("bullpen_temp"))
+    building_sensors["CONF_RM_CO2_LEVEL"] = float(request.form.get("conf_co2"))
+    building_sensors["IDF_CLOSET_TEMP"] = float(request.form.get("idf_temp"))
+    
+    # Process the engineering control logic loops based on new inputs
+    execute_bms_logic()
+    
+    return redirect(url_for("index"))
+
+def execute_bms_logic():
+    print("\n--- RUNNING BACKEND HVAC BOUNDARY EVALUATION ---")
+    
+    # 1. Bullpen Variable Air Volume Check
+    if building_sensors["BULLPEN_ZONE_TEMP"] > SETPOINTS["BULLPEN_COOLING"]:
+        print(f"[ACTION]: Bullpen Temp ({building_sensors['BULLPEN_ZONE_TEMP']}°F) high. Opening VAV-01 Damper to 100%.")
     else:
-        print(f"[STATUS]: Conference Room air composition stable ({building_sensors['CONF_RM_CO2_LEVEL']} PPM).")
+        print(f"[STATUS]: Bullpen operating within nominal thermal thresholds.")
+
+    # 2. Conference Room Fresh Air Flush Check
+    if building_sensors["CONF_RM_CO2_LEVEL"] > SETPOINTS["CONF_MAX_CO2"]:
+        print(f"[WARN]: CO2 Spike ({building_sensors['CONF_RM_CO2_LEVEL']} PPM). Modulating fresh air intake loop.")
+    else:
+        print(f"[STATUS]: Conference room air exchange rates stable.")
 
 if __name__ == "__main__":
-    # Execute a single diagnostic evaluation pass
-    evaluate_hvac_logic()
+    # Bind to environment port or default to standard local test port
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
