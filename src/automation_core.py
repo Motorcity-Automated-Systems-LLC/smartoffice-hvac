@@ -2,7 +2,8 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 
-app = Flask(__name__)
+# This tells Flask to look for the 'templates' folder inside the 'src' directory
+app = Flask(__name__, template_folder='templates')
 
 # Live Global State (Simulated BACnet Instance Memory)
 building_sensors = {
