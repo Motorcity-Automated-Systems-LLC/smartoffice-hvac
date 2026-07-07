@@ -57,3 +57,14 @@ if __name__ == "__main__":
     # Bind to environment port or default to standard local test port
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+import json
+
+DATA_FILE = "data_store.json"
+
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f: return json.load(f)
+    return {"BULLPEN_ZONE_TEMP": 74.5, "CONF_RM_CO2_LEVEL": 450.0, "IDF_CLOSET_TEMP": 67.2, "OFFICE_1_TEMP": 72.0, "OFFICE_2_TEMP": 72.0}
+
+def save_data(data):
+    with open(DATA_FILE, "w") as f: json.dump(data, f)
