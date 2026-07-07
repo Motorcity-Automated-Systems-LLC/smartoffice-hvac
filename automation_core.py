@@ -16,9 +16,9 @@ config = {
 def index():
     if request.method == "POST":
         # Update the running config
-        config["BULLPEN_TEMP"] = float(request.form.get("bullpen_temp"))
-        config["CONF_CO2"] = float(request.form.get("conf_co2"))
-        config["IDF_TEMP"] = float(request.form.get("idf_temp"))
+        config["BULLPEN_ZONE_TEMP"] = float(request.form.get("bullpen_temp"))
+        config["CONF_RM_CO2_LEVEL"] = float(request.form.get("conf_co2"))
+        config["IDF_CLOSET_TEMP"] = float(request.form.get("idf_temp"))
         config["OFFICE_1_TEMP"] = float(request.form.get("office_1_temp"))
         config["OFFICE_2_TEMP"] = float(request.form.get("office_2_temp"))
         return redirect(url_for("index"))
