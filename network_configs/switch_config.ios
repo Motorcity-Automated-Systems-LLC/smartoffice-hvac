@@ -1,0 +1,30 @@
+! Cisco IOS-XE Switch Configuration for MDF Core Switch
+version 17.3
+hostname Core-Switch-MDF
+
+vlan 10
+ name Corporate-Data
+vlan 15
+ name VoIP-Voice
+vlan 20
+ name Building-Automation
+
+! Configure Trunk Port to Firewall Router
+interface GigabitEthernet0/1
+ description Trunk Link to Gateway Firewall
+ switchport mode trunk
+ switchport trunk allowed vlan 10,15,20
+
+! Configure Access Ports for Corporate Workstations (VLAN 10)
+interface range GigabitEthernet1/1 - 16
+ description Bullpen Workstations - VLAN 10 (/27)
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+
+! Configure Access Ports for BACnet IoT Controllers (VLAN 20)
+interface range GigabitEthernet2/1 - 8
+ description BACnet HVAC Controllers & Smart TVs - VLAN 20 (/28)
+ switchport mode access
+ switchport access vlan 20
+ spanning-tree portfast
