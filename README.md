@@ -2,7 +2,7 @@
 A comprehensive engineering project designing a secure, high-efficiency smart facility from the ground up. This repository bridges the gap between Layer 1-4 IT network architecture and Layer 7 Industrial Building Automation Systems (BAS).
 
 ## 🏢 Project Scope & Floor Plan
-![Office Floor Plan](docs/smartoffice-3d.png)
+![Office Floor Plan](docs/smartoffice-3d.jpg)
 
 The target environment is a modern 2,500 sq. ft. commercial office space optimized for efficient resource usage, operational isolation, and high-security boundaries. 
 
