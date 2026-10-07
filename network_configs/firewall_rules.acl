@@ -1,0 +1,14 @@
+# Firewall Access Control List (ACL) - Zero Trust Inter-VLAN Policy
+# Enforces isolation of VLAN 20 (Building Automation) from corporate exposure[cite: 1]
+
+# Rule 1: Allow established/related traffic back to corporate management server
+access-list BAS_INBOUND permit tcp any 192.168.10.40/28 established
+
+# Rule 2: Allow authorized SCADA/Monitoring polling host on VLAN 10 to poll BACnet controllers on VLAN 20
+access-list BAS_INBOUND permit udp 192.168.10.5 192.168.10.40/28 eq 47808
+
+# Rule 3: Explicitly deny all other inbound traffic from Corporate Data to Building Automation
+access-list BAS_INBOUND deny ip 192.168.10.0/27 192.168.10.40/28 log
+
+# Rule 4: Permit default outbound routing from BAS
+access-list BAS_INBOUND permit ip 192.168.10.40/28 any
