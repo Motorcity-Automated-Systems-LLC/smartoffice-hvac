@@ -38,7 +38,7 @@ To eliminate security vulnerabilities and maximize network performance, the infr
 
 ## 📁 Repository Directory Structure
 ```text
-smart-office-infrastructure/
+smartoffce-hvac/
 │
 ├── docs/
 │   ├── blueprints/           <-- Architectural floor plan renders
