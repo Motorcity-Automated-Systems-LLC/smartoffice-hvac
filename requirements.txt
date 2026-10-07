@@ -1,2 +1,2 @@
-flask==3.0.3
-werkzeug==3.0.3
+bacpypes3>=0.9.0
+influxdb-client>=1.40.0
