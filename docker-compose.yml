@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: smart-office-influxdb
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=motorcity-automation
+      - DOCKER_INFLUXDB_INIT_BUCKET=facility-telemetry
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: smart-office-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafanapassword
+    depends_on:
+      - influxdb
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  influxdb-data:
+  grafana-data:
